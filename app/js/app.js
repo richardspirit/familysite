@@ -1,5 +1,15 @@
-angular.module('website', ['ngAnimate'])
-	.controller('MainCtrl', function($scope) {
+angular.module('website', [
+	'ngRoute',
+	'website.trees',
+	'website.home',
+	'ngAnimate'
+	])	
+	.config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+		$locationProvider.hashPrefix('!');
+		
+		$routeProvider.otherwise({redirectTo: '/templates/home'});
+}])
+	.controller('MainCtrl', ['$scope', function($scope) {
         $scope.slides = [
             {image: 'images/img00.jpg', description: 'Image 00'},
             {image: 'images/img01.jpg', description: 'Image 01'},
@@ -29,12 +39,12 @@ angular.module('website', ['ngAnimate'])
 			$scope.direction = 'right';
 			$scope.currentIndex = ($scope.currentIndex < $scope.slides.length - 1) ? ++$scope.currentIndex : 0;
 		};
-	})
+	}])
 	.animation('.slide-animation', function() {
 		return {
 			addClass: function (element, className, done) {
 				if (className == 'ng-hide') {
-					TweenMax.to(element, 0.5, {left: -element.parent().width(), onComplete: done });
+					TweenMax.to(element, 0.5, {left: -element.parent(), onComplete: done });
 				}
 				else {
 					done();
@@ -44,7 +54,7 @@ angular.module('website', ['ngAnimate'])
 				if (className == 'ng-hide') {
 					element.removeClass('ng-hide');
 					
-					TweenMax.set(element, { left: element.parent().width() });
+					TweenMax.set(element, { left: element.parent() });
 					TweenMax.to(element, 0.5, {left: 0, onComplete: done});
 				}
 				else {
